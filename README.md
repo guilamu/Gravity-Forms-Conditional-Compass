@@ -1,4 +1,4 @@
-# Gravity Conditional Compass
+# Gravity Forms Conditional Compass
 ![Plugin Screenshot](https://github.com/guilamu/Gravity-Forms-Conditional-Compass/blob/main/Screenshot.png)
 
 Display field IDs and conditional logic dependencies in the Gravity Forms editor with live updates and clickable badges.
