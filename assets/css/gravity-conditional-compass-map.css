@@ -124,23 +124,24 @@
 
 /* Textarea */
 .gfcl-map-textarea {
-	width: 100%;
-	min-height: 500px;
-	font-family: 'Courier New', Courier, monospace;
-	font-size: 13px;
-	line-height: 1.6;
-	padding: 16px;
-	border: 1px solid #dcdcde;
-	border-radius: 4px;
-	background: #f6f7f7;
-	color: #1d2327;
-	resize: vertical;
-	white-space: pre;
-	overflow-wrap: normal;
-	overflow-x: auto;
-	box-sizing: border-box;
-	transition: border-color 0.2s ease, background-color 0.2s ease;
+    width: 100%;
+    min-height: 300px;
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 13px;
+    line-height: 1.6;
+    padding: 16px;
+    border: 1px solid #dcdcde;
+    border-radius: 4px;
+    background: #f6f7f7;
+    color: #1d2327;
+    resize: vertical !important; /* ensure vertical resize is allowed */
+    white-space: pre;
+    overflow-wrap: normal;
+    overflow-x: auto;
+    box-sizing: border-box;
+    transition: border-color 0.2s ease, background-color 0.2s ease;
 }
+
 
 .gfcl-map-textarea:focus {
 	outline: none;
@@ -251,4 +252,10 @@
 	.gfcl-toggle-label {
 		font-size: 13px;
 	}
+}
+
+textarea.gfcl-map-textarea,
+textarea.gfcl-map-textarea[readonly] {
+    resize: vertical !important;   /* allow vertical resizing */
+    overflow-y: auto;              /* keep internal scroll if needed */
 }
