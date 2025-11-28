@@ -1,0 +1,147 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: Gravity Forms Conditional Compass 1.0.0\n"
+"Report-Msgid-Bugs-To: https://gravitywiz.com/\n"
+"POT-Creation-Date: 2025-11-27 20:15+0000\n"
+"PO-Revision-Date: 2025-11-27 21:20+0100\n"
+"Last-Translator: \n"
+"Language-Team: French\n"
+"Language: fr_FR\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"X-Generator: Poedit 3.4.4\n"
+
+#: gravity-conditional-compass.php:163
+#, php-format
+msgid "ID: %d"
+msgstr "ID : %d"
+
+#: gravity-conditional-compass.php:82
+msgid "Current Time"
+msgstr "Heure actuelle"
+
+#: gravity-conditional-compass.php:83
+msgid "Current Date"
+msgstr "Date actuelle"
+
+#: gravity-conditional-compass.php:84
+msgid "Yesterday"
+msgstr "Hier"
+
+#: gravity-conditional-compass.php:85
+msgid "Tomorrow"
+msgstr "Demain"
+
+#: gravity-conditional-compass.php:86
+msgid "Last Week"
+msgstr "Semaine dernière"
+
+#: gravity-conditional-compass.php:87
+msgid "Next Week"
+msgstr "Semaine prochaine"
+
+#: gravity-conditional-compass.php:88
+msgid "Last Month"
+msgstr "Mois dernier"
+
+#: gravity-conditional-compass.php:89
+msgid "Next Month"
+msgstr "Mois prochain"
+
+#: gravity-conditional-compass.php:90
+msgid "Last Year"
+msgstr "Année dernière"
+
+#: gravity-conditional-compass.php:91
+msgid "Next Year"
+msgstr "Année prochaine"
+
+#: gravity-conditional-compass.php:92
+msgid "field"
+msgstr "champ"
+
+#: gravity-conditional-compass.php:93
+msgid "This field"
+msgstr "Ce champ"
+
+#: gravity-conditional-compass.php:94
+msgid "will be displayed if"
+msgstr "sera affiché si"
+
+#: gravity-conditional-compass.php:95
+msgid "will be hidden if"
+msgstr "sera masqué si"
+
+#: gravity-conditional-compass.php:96
+msgid "is empty"
+msgstr "est vide"
+
+#: gravity-conditional-compass.php:97
+msgid "is not empty"
+msgstr "n'est pas vide"
+
+#: gravity-conditional-compass.php:98
+msgid "Has conditional logic"
+msgstr "A une logique conditionnelle"
+
+#: gravity-conditional-compass.php:99
+msgid "Used in conditional logic"
+msgstr "Utilisé dans la logique conditionnelle"
+
+#: gravity-conditional-compass.php:100
+msgid "Used as condition in"
+msgstr "Utilisé comme condition dans"
+
+#: gravity-conditional-compass.php:101
+msgid "All conditions must be met"
+msgstr "Toutes les conditions doivent être remplies"
+
+#: gravity-conditional-compass.php:102
+msgid "Any condition can be met"
+msgstr "N'importe quelle condition peut être remplie"
+
+#: gravity-conditional-compass.php:104
+msgid "is"
+msgstr "est"
+
+#: gravity-conditional-compass.php:105
+msgid "is not"
+msgstr "n'est pas"
+
+#: gravity-conditional-compass.php:106
+msgid "is greater than"
+msgstr "est supérieur à"
+
+#: gravity-conditional-compass.php:107
+msgid "is less than"
+msgstr "est inférieur à"
+
+#: gravity-conditional-compass.php:108
+msgid "is greater than or equal to"
+msgstr "est supérieur ou égal à"
+
+#: gravity-conditional-compass.php:109
+msgid "is less than or equal to"
+msgstr "est inférieur ou égal à"
+
+#: gravity-conditional-compass.php:110
+msgid "contains"
+msgstr "contient"
+
+#: gravity-conditional-compass.php:111
+msgid "starts with"
+msgstr "commence par"
+
+#: gravity-conditional-compass.php:112
+msgid "ends with"
+msgstr "se termine par"
+
+#: gravity-conditional-compass.php:113
+msgid "is in"
+msgstr "est dans"
+
+#: gravity-conditional-compass.php:114
+msgid "is not in"
+msgstr "n'est pas dans"
