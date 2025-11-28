@@ -5,7 +5,7 @@
 Ever felt hopelessly lost in your own Gravity Forms conditional logic, like you built a maze and then misplaced the map? This plugin is your sarcastic little compass: it turns that wall of IFs and ANDs into a readable Conditional Logic Map and sprinkles clickable conditional badges directly in the form builder so you can see exactly which fields are pulling the strings!
 
 ## Features
-![Plugin Screenshot](https://github.com/guilamu/Gravity-Forms-Conditional-Compass/blob/main/screenshot.png)![Plugin Screenshot](https://github.com/guilamu/Gravity-Forms-Conditional-Compass/blob/main/screenshot-2.png)
+![Plugin Screenshot](https://github.com/guilamu/Gravity-Forms-Conditional-Compass/blob/main/screenshot-3.png)![Plugin Screenshot](https://github.com/guilamu/Gravity-Forms-Conditional-Compass/blob/main/screenshot-2.png)
 
 - **Field ID Badges**: Display field IDs inline with field labels in the form editor
 - **Conditional Logic Badges**: Show which fields are referenced in conditional logic rules
