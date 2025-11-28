@@ -1,7 +1,7 @@
 <?php
 /**
  * Conditional Logic Map Class
- * 
+ *
  * Handles the form settings page for displaying conditional logic relationships
  *
  * @package Gravity_Conditional_Compass
@@ -58,7 +58,7 @@ class GF_Conditional_Logic_Map {
 			'label' => __( 'Conditional Logic Map', 'gravity-conditional-compass' ),
 			'icon'  => $icon_svg,
 		);
-		
+
 		return $menu_items;
 	}
 
@@ -175,32 +175,34 @@ class GF_Conditional_Logic_Map {
 
 			// Determine if field has dependencies
 			$has_depends_on = ! empty( $field->conditionalLogic ) && ! empty( $field->conditionalLogic['rules'] );
-			$has_used_by = isset( $usage_map[ $field->id ] );
-			
+			$has_used_by    = isset( $usage_map[ $field->id ] );
+
+			// Mark unused fields (neither use conditions nor are used by others)
+			$unused_start = ( ! $has_depends_on && ! $has_used_by ) ? '[UNUSED-START]' : '';
+			$unused_end   = ( ! $has_depends_on && ! $has_used_by ) ? '[UNUSED-END]' : '';
+
 			$map .= sprintf(
-				"[FIELD-ID-START]Field %d[FIELD-ID-END] [FIELD-TYPE-START][%s][FIELD-TYPE-END] \"%s\"%s%s\n",
+				"%s[FIELD-ID-START]Field %d[FIELD-ID-END] [FIELD-TYPE-START][%s][FIELD-TYPE-END] \"%s\"\n",
+				$unused_start,
 				$field->id,
 				$field_type,
-				$field_label,
-				$has_depends_on ? ' [HAS-DEPENDS-ON]' : '',
-				$has_used_by ? ' [HAS-USED-BY]' : ''
+				$field_label
 			);
 
 			// DEPENDS ON (conditions FROM other fields)
 			if ( $has_depends_on ) {
 				$logic_type = isset( $field->conditionalLogic['logicType'] ) ? $field->conditionalLogic['logicType'] : 'all';
-				
-				$map .= "[DEPENDS-ON-START]\n";
+
 				foreach ( $field->conditionalLogic['rules'] as $index => $rule ) {
 					$condition_field_id = $rule['fieldId'];
 					$condition_field    = GFFormsModel::get_field( $form, $condition_field_id );
 					$condition_label    = $condition_field ? ( ! empty( $condition_field->adminLabel ) ? $condition_field->adminLabel : $condition_field->label ) : "Field {$condition_field_id}";
-					
+
 					$operator = isset( $operator_map[ $rule['operator'] ] ) ? $operator_map[ $rule['operator'] ] : $rule['operator'];
 					$value    = isset( $rule['value'] ) ? $rule['value'] : '';
-					
+
 					$action = ( $field->conditionalLogic['actionType'] === 'show' ) ? 'SHOW IF' : 'HIDE IF';
-					
+
 					// Build the sentence
 					if ( $rule['operator'] === 'is' && empty( $value ) ) {
 						$condition_text = sprintf(
@@ -223,29 +225,27 @@ class GF_Conditional_Logic_Map {
 							$value
 						);
 					}
-					
+
 					$map .= sprintf(
 						"  ╚═[%s]═> %s\n",
 						$action,
 						$condition_text
 					);
-					
+
 					// Add logic type indicator if there are multiple rules
 					if ( count( $field->conditionalLogic['rules'] ) > 1 && $index < count( $field->conditionalLogic['rules'] ) - 1 ) {
 						$logic_indicator = strtoupper( $logic_type );
 						$map .= sprintf( "      [%s]\n", $logic_indicator );
 					}
 				}
-				$map .= "[DEPENDS-ON-END]\n";
 			}
 
 			// USED BY (conditions TO other fields that use this field)
 			if ( $has_used_by ) {
-				$map .= "[USED-BY-START]\n";
 				foreach ( $usage_map[ $field->id ] as $usage ) {
 					$operator = isset( $operator_map[ $usage['operator'] ] ) ? $operator_map[ $usage['operator'] ] : $usage['operator'];
 					$value    = $usage['value'];
-					
+
 					if ( $usage['operator'] === 'is' && empty( $value ) ) {
 						$condition_desc = 'is empty';
 					} elseif ( $usage['operator'] === 'isnot' && empty( $value ) ) {
@@ -253,17 +253,16 @@ class GF_Conditional_Logic_Map {
 					} else {
 						$condition_desc = sprintf( '%s %s', $operator, $value );
 					}
-					
+
 					$map .= sprintf(
-						"  └─> USED BY [FIELD-ID-START]Field %d[FIELD-ID-END] (condition: %s)\n",
+						"  └─> IS USED BY [FIELD-ID-START]Field %d[FIELD-ID-END] (condition: %s)\n",
 						$usage['field_id'],
 						$condition_desc
 					);
 				}
-				$map .= "[USED-BY-END]\n";
 			}
 
-			$map .= "\n";
+			$map .= $unused_end . "\n";
 		}
 
 		return $map;
@@ -297,24 +296,6 @@ class GF_Conditional_Logic_Map {
 					<!-- Filter Toggles -->
 					<div class="gfcl-filters">
 						<label class="gfcl-toggle">
-							<input type="checkbox" id="gfcl-hide-depends-on" class="gfcl-toggle-input">
-							<span class="gfcl-toggle-slider"></span>
-							<span class="gfcl-toggle-label"><?php esc_html_e( 'Hide DEPENDS ON dependencies', 'gravity-conditional-compass' ); ?></span>
-						</label>
-
-						<label class="gfcl-toggle">
-							<input type="checkbox" id="gfcl-hide-used-by" class="gfcl-toggle-input">
-							<span class="gfcl-toggle-slider"></span>
-							<span class="gfcl-toggle-label"><?php esc_html_e( 'Hide USED BY dependencies', 'gravity-conditional-compass' ); ?></span>
-						</label>
-
-						<label class="gfcl-toggle">
-							<input type="checkbox" id="gfcl-only-with-deps" class="gfcl-toggle-input">
-							<span class="gfcl-toggle-slider"></span>
-							<span class="gfcl-toggle-label"><?php esc_html_e( 'Show only fields with USED BY or DEPENDS ON dependencies', 'gravity-conditional-compass' ); ?></span>
-						</label>
-
-						<label class="gfcl-toggle">
 							<input type="checkbox" id="gfcl-hide-field-number" class="gfcl-toggle-input">
 							<span class="gfcl-toggle-slider"></span>
 							<span class="gfcl-toggle-label"><?php esc_html_e( 'Hide field number', 'gravity-conditional-compass' ); ?></span>
@@ -325,11 +306,29 @@ class GF_Conditional_Logic_Map {
 							<span class="gfcl-toggle-slider"></span>
 							<span class="gfcl-toggle-label"><?php esc_html_e( 'Hide field type', 'gravity-conditional-compass' ); ?></span>
 						</label>
+
+						<label class="gfcl-toggle">
+							<input type="checkbox" id="gfcl-hide-unused" class="gfcl-toggle-input">
+							<span class="gfcl-toggle-slider"></span>
+							<span class="gfcl-toggle-label"><?php esc_html_e( 'Hide fields not in any condition', 'gravity-conditional-compass' ); ?></span>
+						</label>
+
+						<label class="gfcl-toggle">
+							<input type="checkbox" id="gfcl-hide-used-by" class="gfcl-toggle-input">
+							<span class="gfcl-toggle-slider"></span>
+							<span class="gfcl-toggle-label"><?php esc_html_e( 'Hide "is used" dependencies', 'gravity-conditional-compass' ); ?></span>
+						</label>
+
+						<label class="gfcl-toggle">
+							<input type="checkbox" id="gfcl-hide-depends-on" class="gfcl-toggle-input">
+							<span class="gfcl-toggle-slider"></span>
+							<span class="gfcl-toggle-label"><?php esc_html_e( 'Hide "depends on" dependencies', 'gravity-conditional-compass' ); ?></span>
+						</label>
 					</div>
 
-					<textarea 
+					<textarea
 						id="gfcl-map-textarea"
-						class="gfcl-map-textarea" 
+						class="gfcl-map-textarea"
 						readonly
 					><?php echo esc_textarea( $map_content ); ?></textarea>
 					<p class="gfcl-help-text">
