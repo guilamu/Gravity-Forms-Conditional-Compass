@@ -10,10 +10,13 @@ Ever felt hopelessly lost in your own Gravity Forms conditional logic, like you 
 - **Field ID Badges**: Display field IDs inline with field labels in the form editor
 - **Conditional Logic Badges**: Show which fields are referenced in conditional logic rules
 - **Conditional Logic Map**: Comprehensive overview of all conditional logic relationships in your form
-- **Live Updates**: Badges update automatically when you modify conditional logic settings
+- **Live Updates**: Badges update automatically when you modify conditional logic settings (optimized with debouncing)
 - **Clickable Badges**: Click badges to jump directly to the conditional logic settings
+- **Keyboard Navigation**: Full keyboard accessibility support (Tab, Enter, Space)
 - **Tooltips**: Hover over badges for detailed information in plain English (or French)
 - **Visual Logic Type Indicators**: ALL/ANY badges show the logic type for multiple conditions
+- **Global Toggles**: Hide/show badge types via settings panel
+- **Performance Optimized**: Debounced updates, DOM caching, and efficient event handling
 - **Multilingual**: Fully translatable (English and French included)
 
 ## Installation
@@ -42,7 +45,9 @@ Once activated, the plugin automatically displays:
 
 - **Hover** over COND badges to see the full conditional logic rule in plain language
 - **Click** on COND badges to open the conditional logic settings for that field
+- **Keyboard Navigation**: Use Tab to navigate to badges, Enter or Space to activate
 - **Hover** over ALL/ANY badges to see their meaning
+- **Toggle Badges**: Use the global toggles in the settings panel to hide/show badge types
 
 ### Conditional Logic Map
 
@@ -92,6 +97,44 @@ The plugin is translation-ready and includes:
 - **Purpose**: Indicates whether all or any conditions must be met
 - **Tooltip**: "All conditions must be met" or "Any condition can be met"
 
+## Plugin Structure
+
+```
+gravity-conditional-compass/
+├── assets/
+│   ├── css/
+│   │   ├── gravity-conditional-compass.css          # Form builder badge styles
+│   │   └── gravity-conditional-compass-map.css     # Conditional Logic Map page styles
+│   ├── images/
+│   │   ├── icon-128x128.png
+│   │   ├── icon-256x256.png
+│   │   ├── logo.bw.svg
+│   │   ├── logo.png
+│   │   └── randomize.png                            # Arrow icon for badges
+│   └── js/
+│       ├── gravity-conditional-compass.js           # Form builder functionality
+│       └── gravity-conditional-compass-map.js      # Conditional Logic Map functionality
+├── includes/
+│   └── class-gravity-conditional-compass-map.php   # Conditional Logic Map settings page class
+├── languages/
+│   ├── gravity-conditional-compass-fr_FR.mo        # French translation (compiled)
+│   ├── gravity-conditional-compass-fr_FR.po        # French translation (source)
+│   └── gravity-conditional-compass.pot             # Translation template
+├── gravity-conditional-compass.php                  # Main plugin file
+├── LICENSE
+├── README.md
+└── Screenshot.png
+```
+
+### File Descriptions
+
+- **gravity-conditional-compass.php**: Main plugin file that handles initialization, asset enqueuing, and field content filtering
+- **assets/js/gravity-conditional-compass.js**: Core JavaScript for form builder badges, conditional logic detection, and badge interactions
+- **assets/js/gravity-conditional-compass-map.js**: JavaScript for the Conditional Logic Map settings page (filtering, copy functionality)
+- **assets/css/gravity-conditional-compass.css**: Styles for form builder badges and tooltips
+- **assets/css/gravity-conditional-compass-map.css**: Styles for the Conditional Logic Map settings page
+- **includes/class-gravity-conditional-compass-map.php**: PHP class handling the Conditional Logic Map settings page generation and display
+
 ## Changelog
 
 ### Version 0.9.8 - 2025-11-28
@@ -101,7 +144,28 @@ The plugin is translation-ready and includes:
 - Updated all file names and references
 - Updated text domain to `gravity-conditional-compass`
 - Updated folder structure and naming conventions
-- Added three global toggles in the “Field Settings → No field selected” panel to hide field ID badges, “is used” dependencies, and “depends on” dependencies in the form editor.
+- Added three global toggles in the "Field Settings → No field selected" panel to hide field ID badges, "is used" dependencies, and "depends on" dependencies in the form editor.
+
+#### Code Quality & Performance Improvements
+- **Performance Optimizations**:
+  - Implemented debouncing for badge updates (150ms delay) to reduce excessive DOM updates
+  - Added DOM element caching to minimize jQuery queries
+  - Optimized MutationObserver to only trigger on relevant DOM changes
+  - Reduced redundant function calls and improved event handler efficiency
+  
+- **Code Quality**:
+  - Added comprehensive JSDoc documentation for all JavaScript functions
+  - Improved error handling with validation checks and try-catch blocks
+  - Enhanced code organization with better function structure and naming
+  - Added accessibility improvements (keyboard navigation, ARIA attributes, focus states)
+  - Improved PHP documentation with PHPDoc comments
+  
+- **Code Refactoring**:
+  - Wrapped JavaScript in IIFE with strict mode
+  - Consolidated event handlers using event delegation
+  - Removed redundant code and improved variable scoping
+  - Fixed version constant mismatch (0.9.7 → 0.9.8)
+  - Enhanced CSS with better organization and accessibility focus states
 
 #### Improvements
 - Refined file organization
@@ -126,6 +190,40 @@ The plugin is translation-ready and includes:
 - Multilingual support (English and French)
 - ALL/ANY logic type indicators
 - Click badges to open conditional logic settings
+
+## Technical Details
+
+### Performance Features
+- **Debounced Updates**: Badge updates are debounced (150ms) to prevent excessive DOM manipulation during rapid changes
+- **DOM Caching**: Frequently accessed elements are cached to reduce jQuery queries
+- **Event Delegation**: Efficient event handling using event delegation patterns
+- **Optimized Observers**: MutationObserver configured to only trigger on relevant DOM changes
+
+### Code Quality
+- **Documentation**: Comprehensive JSDoc and PHPDoc comments throughout
+- **Error Handling**: Robust error handling with validation checks and graceful fallbacks
+- **Accessibility**: Full keyboard navigation support, ARIA attributes, and focus states
+- **Standards Compliance**: Follows WordPress and JavaScript best practices
+
+### Browser Support
+- Modern browsers (Chrome, Firefox, Safari, Edge)
+- Requires JavaScript enabled
+- localStorage support for toggle state persistence
+
+## Development
+
+### Code Structure
+- **PHP**: Object-oriented approach with singleton pattern for settings page
+- **JavaScript**: Modular functions with clear separation of concerns
+- **CSS**: Organized with comments and logical grouping
+
+### Contributing
+When contributing code, please ensure:
+- All functions have proper documentation (JSDoc/PHPDoc)
+- Error handling is implemented
+- Accessibility features are maintained
+- Performance optimizations are considered
+- Code follows existing style and patterns
 
 ## Support
 

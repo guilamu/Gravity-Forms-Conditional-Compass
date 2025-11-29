@@ -15,7 +15,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 // Define plugin constants
-define( 'GFFIELDIDCOND_VERSION', '0.9.7' );
+define( 'GFFIELDIDCOND_VERSION', '0.9.8' );
 define( 'GFFIELDIDCOND_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
 define( 'GFFIELDIDCOND_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
 
@@ -32,7 +32,10 @@ function gf_field_id_cond_load_textdomain() {
 add_action( 'plugins_loaded', 'gf_field_id_cond_load_textdomain' );
 
 /**
- * Enqueue admin styles - DUAL APPROACH for reliability
+ * Enqueue admin styles for form builder
+ *
+ * Uses early priority to ensure styles load before Gravity Forms editor styles.
+ * Only loads on Gravity Forms editor pages.
  */
 function gf_field_id_cond_enqueue_styles() {
 	$current_screen = get_current_screen();
@@ -47,11 +50,15 @@ function gf_field_id_cond_enqueue_styles() {
 		);
 	}
 }
-// Hook with EARLY priority 5 instead of default 10
 add_action( 'admin_enqueue_scripts', 'gf_field_id_cond_enqueue_styles', 5 );
 
 /**
  * Fallback: Output CSS directly in admin_head if enqueue doesn't work
+ *
+ * This is a redundancy measure to ensure styles load even if wp_enqueue_style
+ * fails due to plugin conflicts or timing issues.
+ *
+ * @return void
  */
 function gf_field_id_cond_inline_css_fallback() {
 	$current_screen = get_current_screen();
@@ -59,13 +66,18 @@ function gf_field_id_cond_inline_css_fallback() {
 	// Only on Gravity Forms editor pages
 	if ( $current_screen && strpos( $current_screen->id, 'gf_edit_forms' ) !== false ) {
 		$css_url = GFFIELDIDCOND_PLUGIN_URL . 'assets/css/gravity-conditional-compass.css';
-		echo '<link rel="stylesheet" href="' . esc_url( $css_url ) . '?ver=' . GFFIELDIDCOND_VERSION . '" type="text/css" media="all" />';
+		echo '<link rel="stylesheet" href="' . esc_url( $css_url ) . '?ver=' . esc_attr( GFFIELDIDCOND_VERSION ) . '" type="text/css" media="all" />';
 	}
 }
 add_action( 'admin_head', 'gf_field_id_cond_inline_css_fallback', 1 );
 
 /**
- * Output translations and plugin URL INLINE before loading external JavaScript
+ * Output translations and plugin URL inline before loading external JavaScript
+ *
+ * This ensures translations are available immediately when the script loads.
+ * Uses priority 5 to run before script enqueue (priority 10).
+ *
+ * @return void
  */
 add_action( 'gform_editor_js', function() {
 	?>
@@ -118,7 +130,11 @@ add_action( 'gform_editor_js', function() {
 }, 5 ); // Priority 5 - runs BEFORE the script enqueue priority 10
 
 /**
- * Enqueue external JavaScript file
+ * Enqueue JavaScript file for form builder functionality
+ *
+ * Only loads on Gravity Forms editor pages. Requires jQuery as a dependency.
+ *
+ * @return void
  */
 function gf_field_id_cond_enqueue_scripts() {
 	$current_screen = get_current_screen();
@@ -138,21 +154,35 @@ add_action( 'admin_enqueue_scripts', 'gf_field_id_cond_enqueue_scripts', 10 );
 
 /**
  * Display field IDs and conditional logic badges in form editor
+ *
+ * Adds a badge container with field ID after the field label/legend.
+ * JavaScript will populate this container with conditional logic badges.
+ *
+ * @param string $content The field HTML content
+ * @param object $field   The Gravity Forms field object
+ * @return string Modified content with badge container
  */
 add_filter( 'gform_field_content', function( $content, $field ) {
+	// Only modify content in form editor
 	if ( ! GFCommon::is_form_editor() ) {
 		return $content;
 	}
 
-	// Build the initial badges HTML with a container
-	$badges  = sprintf( '<span class="gw-field-badges" data-field-id="%d">', $field->id );
-	$badges .= sprintf(
-		'<span class="gw-inline-field-id">%s</span>',
-		sprintf( esc_html__( 'ID: %d', 'gravity-conditional-compass' ), $field->id )
-	);
-	$badges .= '</span>';
+	// Validate field object
+	if ( ! is_object( $field ) || ! isset( $field->id ) ) {
+		return $content;
+	}
 
-	// Insert badges after </label> or </legend> using a valid regex with delimiters
+	// Build the initial badges HTML with a container
+	$field_id = absint( $field->id );
+	$badges   = sprintf( '<span class="gw-field-badges" data-field-id="%d">', $field_id );
+	$badges  .= sprintf(
+		'<span class="gw-inline-field-id">%s</span>',
+		sprintf( esc_html__( 'ID: %d', 'gravity-conditional-compass' ), $field_id )
+	);
+	$badges  .= '</span>';
+
+	// Insert badges after </label> or </legend> using regex
 	$search  = '<\\/label>|<\\/legend>';
 	$replace = sprintf( '\\0 %s', $badges );
 	$new     = preg_replace( "/$search/", $replace, $content, 1 );
@@ -167,17 +197,24 @@ add_filter( 'gform_field_content', function( $content, $field ) {
 
 /**
  * Load Conditional Logic Map class only if file exists
+ *
+ * This loads the settings page class for the Conditional Compass map feature.
+ * Only loads after Gravity Forms is fully loaded.
+ *
+ * @return void
  */
 function gf_field_id_cond_load_conditional_map() {
 	$class_file = GFFIELDIDCOND_PLUGIN_DIR . 'includes/class-gravity-conditional-compass-map.php';
 
-	if ( file_exists( $class_file ) ) {
-		require_once $class_file;
+	if ( ! file_exists( $class_file ) ) {
+		return;
+	}
 
-		// Initialize Conditional Logic Map
-		if ( class_exists( 'GF_Conditional_Logic_Map' ) ) {
-			GF_Conditional_Logic_Map::get_instance();
-		}
+	require_once $class_file;
+
+	// Initialize Conditional Logic Map if class exists
+	if ( class_exists( 'GF_Conditional_Logic_Map' ) ) {
+		GF_Conditional_Logic_Map::get_instance();
 	}
 }
 add_action( 'gform_loaded', 'gf_field_id_cond_load_conditional_map' );
