@@ -137,7 +137,7 @@ gravity-conditional-compass/
 
 ## Changelog
 
-### Version 0.9.8 - 2025-11-28
+### Version 0.9.8 - 2025-11-29
 
 #### Major Update: Plugin Renamed
 - **New Name**: Gravity Conditional Compass (formerly "Gravity Forms Field ID and Conditional Logic Display")
